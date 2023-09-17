@@ -1,6 +1,5 @@
 from random import randint
 
-
 def makeGamePlace(width, height, bombs):
     plase = [[0 for x in range(width)] for y in range(height)]
 
@@ -19,7 +18,7 @@ def makeGamePlace(width, height, bombs):
     for bomb in bombs:
         neibors = getBombNeibors(bomb, width, height)
         neiborsExcludeBombs = [x for x in neibors if x not in bombs]
-        bombMarkers(neiborsExcludeBombs, plase)
+        setBombMarkers(neiborsExcludeBombs, plase)
     return plase
 
 
@@ -49,7 +48,6 @@ def getBombNeibors(bomb, width, height):
     neibors.append((bomb[0]-1, bomb[1]+1))  # 6
     neibors.append((bomb[0], bomb[1]+1))  # 7
     neibors.append((bomb[0]+1, bomb[1]+1))  # 8
-
     return list(filter(lambda x: filtredNeibors(x, width, height), neibors))
 
 
@@ -59,6 +57,6 @@ def filtredNeibors(neibor, width, height):
     return False
 
 
-def bombMarkers(neibors, place):
+def setBombMarkers(neibors, place):
     for neibor in neibors:
         place[neibor[1]][neibor[0]] += 1
