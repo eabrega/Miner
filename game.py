@@ -22,7 +22,7 @@ def makeGamePlace(width:int, height:int, bombs:int) -> list[list[int]]:
     return place
 
 
-def getBombs(place:list[list[int]]) -> list[list(int,int)]:
+def getBombs(place:list[list[int]]) -> list[list[int]]:
     bombsPositions = []
     x = 0
     y = 0
