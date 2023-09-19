@@ -1,13 +1,17 @@
 from random import randint
+from core.math import Point
 
-def makeGamePlace(width:int, height:int, bombs:int) -> list[list[int]]:
+BOMB_VALUE = -1
+gplace = []
+
+def makeGamePlace(width:int, height:int, bombsQuantity:int) -> list[Point]:
     place = [[0 for x in range(width)] for y in range(height)]
 
-    if width * height < bombs:
-        bombs = width * height * 0.15
+    if width * height < bombsQuantity:
+        bombsQuantity = width * height * 0.15
 
     bombsCount = 0
-    while bombsCount < bombs:
+    while bombsCount < bombsQuantity:
         randomX = randint(0, width-1)
         randomY = randint(0, height-1)
         if place[randomY][randomX] != -1:
@@ -19,44 +23,68 @@ def makeGamePlace(width:int, height:int, bombs:int) -> list[list[int]]:
         neibors = getBombNeibors(bomb, width, height)
         neiborsExcludeBombs = [x for x in neibors if x not in bombs]
         setBombMarkers(neiborsExcludeBombs, place)
+    global gplace
+    gplace = place
     return place
 
 
-def getBombs(place:list[list[int]]) -> list[list[int]]:
+def getBombs(place:list[Point]) -> list[Point]:
     bombsPositions = []
     x = 0
     y = 0
     for row in place:
         x = 0
         for c in row:
-            if c == -1:
-                bombsPositions.append((x, y))
+            if c == BOMB_VALUE:
+                bombsPositions.append(Point(x, y))
             x = x+1
         y = y+1
     return bombsPositions
 
+def getValue(point:Point)->int:
+    return gplace[point.Y][point.X]
+    
 
-def getBombNeibors(bomb:list[(int, int)], width, height):
+def getBombNeibors(bomb:Point, width, height) -> list[Point]:
     neibors = []
-    neibors.append((bomb[0]-1, bomb[1]-1))  # 1
-    neibors.append((bomb[0], bomb[1]-1))  # 2
-    neibors.append((bomb[0]+1, bomb[1]-1))  # 3
 
-    neibors.append((bomb[0]-1, bomb[1]))  # 4
-    neibors.append((bomb[0]+1, bomb[1]))  # 5
+    neibors.append(Point(bomb.X-1, bomb.Y-1))  # 1
+    neibors.append(Point(bomb.X, bomb.Y-1))  # 2
+    neibors.append(Point(bomb.X+1, bomb.Y-1))  # 3
 
-    neibors.append((bomb[0]-1, bomb[1]+1))  # 6
-    neibors.append((bomb[0], bomb[1]+1))  # 7
-    neibors.append((bomb[0]+1, bomb[1]+1))  # 8
+    neibors.append(Point(bomb.X-1, bomb.Y))  # 4
+    neibors.append(Point(bomb.X+1, bomb.Y))  # 5
+
+    neibors.append(Point(bomb.X-1, bomb.Y+1))  # 6
+    neibors.append(Point(bomb.X, bomb.Y+1))  # 7
+    neibors.append(Point(bomb.X+1, bomb.Y+1))  # 8
     return list(filter(lambda x: filtredNeibors(x, width, height), neibors))
 
 
-def filtredNeibors(neibor:list[(int, int)], width, height):
-    if (neibor[0] >= 0 and neibor[0] <= width-1 and neibor[1] >= 0 and neibor[1] <= height-1):
+def filtredNeibors(neibor:Point, width, height)-> bool:
+    if (neibor.X >= 0 and neibor.X <= width-1 and neibor.Y >= 0 and neibor.Y <= height-1):
         return True
     return False
 
 
-def setBombMarkers(neibors, place:list[list[int]]):
+def setBombMarkers(neibors:list[Point], place:list[Point]) -> None:
     for neibor in neibors:
-        place[neibor[1]][neibor[0]] += 1
+        if place[neibor.Y][neibor.X] != BOMB_VALUE:
+            place[neibor.Y][neibor.X] += 1
+
+
+def getAllEmptyNeibors(point: Point, w, h)-> list[Point]:
+    emptyNeibors = []
+    neibors = getEmptyNeibors(point, w, h)
+
+    print(neibors)
+
+    return emptyNeibors
+
+def getEmptyNeibors(point: Point, w, h):
+    emptyNeibors = []
+    neibors = getBombNeibors(point, w, h)
+    for neibor in neibors:
+        if getValue(neibor) == 0:
+            emptyNeibors.append(neibor)
+    return emptyNeibors

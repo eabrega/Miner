@@ -1,9 +1,12 @@
-def drowBoard(plase:list[list[int]]):   
+from core.math import Point
+
+
+def drowBoard(plase:list[Point]):   
     for r in plase:
         drowRow(r)
         print()
 
-def drowRow(cels:list[int]):
+def drowRow(cels:Point):
     for c in cels:
         if c != 0:
             print(mapValue(c), " ", end='')
