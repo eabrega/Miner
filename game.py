@@ -2,9 +2,10 @@ from random import randint
 from core.math import Point
 
 BOMB_VALUE = -1
-gplace = []
+SWOWED_EMPTY_CELL_VALUE = 99
+globalGameBoard = []
 
-def makeGamePlace(width:int, height:int, bombsQuantity:int) -> list[Point]:
+def makeGame(width:int, height:int, bombsQuantity:int) -> list[Point]:
     place = [[0 for x in range(width)] for y in range(height)]
 
     if width * height < bombsQuantity:
@@ -18,17 +19,16 @@ def makeGamePlace(width:int, height:int, bombsQuantity:int) -> list[Point]:
             place[randomY][randomX] = -1
             bombsCount = bombsCount+1
 
-    bombs = getBombs(place)
+    global globalGameBoard
+    globalGameBoard = place
+    bombs = getBombPositions(place)
     for bomb in bombs:
         neibors = getBombNeibors(bomb, width, height)
         neiborsExcludeBombs = [x for x in neibors if x not in bombs]
-        setBombMarkers(neiborsExcludeBombs, place)
-    global gplace
-    gplace = place
+        setBombMarkers(neiborsExcludeBombs)  
     return place
 
-
-def getBombs(place:list[Point]) -> list[Point]:
+def getBombPositions(place:list[Point]) -> list[Point]:
     bombsPositions = []
     x = 0
     y = 0
@@ -42,12 +42,11 @@ def getBombs(place:list[Point]) -> list[Point]:
     return bombsPositions
 
 def getValue(point:Point)->int:
-    return gplace[point.Y][point.X]
+    return globalGameBoard[point.Y][point.X]
 
 def setValue(point:Point, value)->None:
-    gplace[point.Y][point.X] = value
+    globalGameBoard[point.Y][point.X] = value
     
-
 def getBombNeibors(bomb:Point, width, height) -> list[Point]:
     neibors = []
 
@@ -63,28 +62,27 @@ def getBombNeibors(bomb:Point, width, height) -> list[Point]:
     neibors.append(Point(bomb.X+1, bomb.Y+1))  # 8
     return list(filter(lambda x: filtredNeibors(x, width, height), neibors))
 
-
 def filtredNeibors(neibor:Point, width, height)-> bool:
     if (neibor.X >= 0 and neibor.X <= width-1 and neibor.Y >= 0 and neibor.Y <= height-1):
         return True
     return False
 
-
-def setBombMarkers(neibors:list[Point], place:list[Point]) -> None:
+def setBombMarkers(neibors:list[Point]) -> None:
     for neibor in neibors:
-        if place[neibor.Y][neibor.X] != BOMB_VALUE:
-            place[neibor.Y][neibor.X] += 1
+        value = getValue(neibor)
+        if value != BOMB_VALUE:
+            value += 1
+            setValue(neibor, value)
 
 def getAllEmptyNeibors(points: list[Point], w, h)-> list[Point]:
-    if len(points) == 0:
+    quantytyNaiborsBefore = len(points)
+    if quantytyNaiborsBefore == 0:
         return points    
 
-    quantytyNaiborsBefore = len(points)
-
     for point in points:
-        neiborPoints = getEmptyNeibors(point, w, h)      
+        neiborPoints = getNeiborsByRules(point, lambda x: x==0, w, h)      
         for point in neiborPoints:  
-            setValue(point, 99)     
+            setValue(point, SWOWED_EMPTY_CELL_VALUE)     
             if point not in points:               
                 points.append(point)
 
@@ -92,21 +90,10 @@ def getAllEmptyNeibors(points: list[Point], w, h)-> list[Point]:
         return points           
     return getAllEmptyNeibors(points, w, h)    
     
-
-def getEmptyNeibors(point: Point, w, h):
+def getNeiborsByRules(point: Point, rules, w, h):
     emptyNeibors = []
     neibors = getBombNeibors(point, w, h)
     for neibor in neibors:
-        if getValue(neibor) == 0:
+        if rules(getValue(neibor)):
             emptyNeibors.append(neibor)
     return emptyNeibors
-
-def getNumberNeibors(point: Point, w, h):
-    emptyNeibors = []
-    neibors = getBombNeibors(point, w, h)
-    for neibor in neibors:
-        if getValue(neibor) > 0 and getValue(neibor) <9:
-            emptyNeibors.append(neibor)
-    return emptyNeibors
-
-

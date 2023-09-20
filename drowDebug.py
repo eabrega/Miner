@@ -1,6 +1,5 @@
 from core.math import Point
 
-
 def drowBoard(plase:list[Point]):   
     for r in plase:
         drowRow(r)

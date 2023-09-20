@@ -20,24 +20,24 @@ def drowUi(place:list[Point], isDebug:bool)->None:
 
     buttons=[]
 
-    def click(f:Point, sender):
+    def click(sender):
         id = buttons.index(sender)
         point = getButtonOrdinats(w, id)
         showNumbers(sender, getBtnValue(place[point.Y][point.X], True))
-        points = getEmptyNeibors(point, w, h)
+        points = getNeiborsByRules(point, lambda x: x==0, w, h)
         neibors = getAllEmptyNeibors(points, w, h)
         for neibor in neibors:          
             id = getButtonsId(w, neibor)
             showNeidors(buttons[id])
-            nn = getNumberNeibors(neibor, w ,h)
-            for n in nn: 
-                id = getButtonsId(w, n)
-                showNumbers(buttons[id], place[n.Y][n.X])
+            numberedNeibors = getNeiborsByRules(neibor, lambda x: x>0 and x<9, w ,h)
+            for neibor in numberedNeibors: 
+                id = getButtonsId(w, neibor)
+                showNumbers(buttons[id], place[neibor.Y][neibor.X])
         
     for row in range(h): 
         for cell in range(w):
             btn = Button(text=getBtnValue(place[row][cell], isDebug), font=fontObj)
-            btn.config(command=lambda f=Point(cell,row), b=btn: click(f, b))
+            btn.config(command=lambda b=btn: click(b))
             btn.grid(row=row, column=cell, sticky=NSEW)   
             buttons.append(btn)        
     

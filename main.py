@@ -1,13 +1,13 @@
 from ui.drowUi import drowUi
 from drowDebug import drowBoard
-from game import makeGamePlace
+from game import makeGame
 
-w = 10
-h = 10
+width = 10
+height = 10
+bombs = 10
 
-place = makeGamePlace(w, h, 10)
-drowBoard(place)
-drowUi(place, False)
-
+gameBoard = makeGame(width, height, bombs)
+drowBoard(gameBoard)
+drowUi(gameBoard, False)
 
 #🚩
