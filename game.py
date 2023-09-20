@@ -75,24 +75,22 @@ def setBombMarkers(neibors:list[Point], place:list[Point]) -> None:
         if place[neibor.Y][neibor.X] != BOMB_VALUE:
             place[neibor.Y][neibor.X] += 1
 
-def getAllEmptyNeibors(emptyNeibors: list[Point], w, h)-> list[Point]:
-    if len(emptyNeibors) == 0:
-        return emptyNeibors
-    
-    for po in emptyNeibors:
-        c =+ len(getEmptyNeibors(po, w, h))
-    if c==0:
-        return emptyNeibors
+def getAllEmptyNeibors(points: list[Point], w, h)-> list[Point]:
+    if len(points) == 0:
+        return points    
 
-    for p in emptyNeibors:
-        nn = getEmptyNeibors(p, w, h)
-        
-        for n in nn:  
-            setValue(n, 99)     
-            if n not in emptyNeibors:               
-                emptyNeibors.append(n)
-                
-    return getAllEmptyNeibors(emptyNeibors, w, h)    
+    quantytyNaiborsBefore = len(points)
+
+    for point in points:
+        neiborPoints = getEmptyNeibors(point, w, h)      
+        for point in neiborPoints:  
+            setValue(point, 99)     
+            if point not in points:               
+                points.append(point)
+
+    if (quantytyNaiborsBefore==len(points)):
+        return points           
+    return getAllEmptyNeibors(points, w, h)    
     
 
 def getEmptyNeibors(point: Point, w, h):
@@ -110,3 +108,5 @@ def getNumberNeibors(point: Point, w, h):
         if getValue(neibor) > 0 and getValue(neibor) <9:
             emptyNeibors.append(neibor)
     return emptyNeibors
+
+
