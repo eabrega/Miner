@@ -5,11 +5,11 @@ BOMB_VALUE = -1
 SWOWED_EMPTY_CELL_VALUE = 99
 globalGameBoard = []
 
-def makeGame(width:int, height:int, bombsQuantity:int) -> list[Point]:
+def makeGame(width:int, height:int, bombsQuantity:int) -> list[list[int]]:
     place = [[0 for x in range(width)] for y in range(height)]
 
     if width * height < bombsQuantity:
-        bombsQuantity = width * height * 0.15
+        bombsQuantity = int(width * height * 0.15)
 
     bombsCount = 0
     while bombsCount < bombsQuantity:
@@ -28,7 +28,7 @@ def makeGame(width:int, height:int, bombsQuantity:int) -> list[Point]:
         setBombMarkers(neiborsExcludeBombs)  
     return place
 
-def getBombPositions(place:list[Point]) -> list[Point]:
+def getBombPositions(place:list[list[int]]) -> list[Point]:
     bombsPositions = []
     x = 0
     y = 0

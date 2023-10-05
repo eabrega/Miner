@@ -1,4 +1,4 @@
-from tkinter import *
+from tkinter import Tk, NSEW
 from ui.helpers.uiHelpers import *
 from tkinter import font
 from core.math import Point
@@ -10,7 +10,7 @@ root.geometry("500x500")
 fontObj = font.Font(size=30, weight='bold')
 
 
-def drowUi(place:list[Point], isDebug:bool)->None:
+def drowUi(place:list[list[int]], isDebug:bool)->None:
     w = len(place[0])
     h = len(place)
     for cell in range(h):

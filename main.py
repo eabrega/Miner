@@ -4,7 +4,7 @@ from game import makeGame
 
 width = 10
 height = 10
-bombs = 10
+bombs = 15
 
 gameBoard = makeGame(width, height, bombs)
 drowBoard(gameBoard)
